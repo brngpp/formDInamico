@@ -1,0 +1,261 @@
+<!-- GUIDA UTILIZZO COMPONENTE DINAMICO
+      1) dichiarare componente padre che avrà il nome della pagina ceh si vuole creare.
+      2) inserire la tabella come figlio all'interno del componente padre , passargli i seguenti input
+            a.inputService il service che userà la tabDinamica , creata appositamente per la pagina
+            b.config servirà a richiare le info di
+              configurazione della pagina
+            c.res , è la resolve della pagina padre che contiene i dati della pagina .
+             I FILE COINVOLTI SONO: IL COMPONENTE PADRE, TAB-DINAMICA,INFOSERVICE E IL SERVICE DEL PADRE-->
+
+             <div class="row breadcrumb-import" *ngIf="config">
+              <div class="button-content">
+                <div class="excel-logo">
+                  <button
+                    mat-button
+                    *ngIf="config.haveImport"
+                    class="importButton mr-15px"
+                    (click)="upload()"
+                  >
+                    <mat-icon class="vertical-align-text-bottom" matPrefix>upgrade</mat-icon>
+                    Import
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="container" *ngIf="config">
+              <div class="row" *ngIf="type !== 'lista-pazienti'">
+                <div class="col-12 mb-2">
+                  <sadi-dinamic-filter
+                    [legacyData]="config.filterConfig"
+                    (Outputdata)="cercaFilters($event)"
+                  ></sadi-dinamic-filter>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12">
+                  <div
+                    class="position-relative table-container cursor-grab"
+                    [ngClass]="{ 'table-container-51vh': modalData }"
+                    id="styleScrollbar"
+                  >
+                    <table
+                      [dataSource]="dataSource"
+                      class="full-width"
+                      mat-table
+                      matSort
+                      multiTemplateDataRows
+                    >
+                      <!-- Componente per selezionare le righe con checkbox -->
+                      <ng-container matColumnDef="checkbox">
+                        <th mat-header-cell *matHeaderCellDef>
+                          <mat-checkbox
+                            class="ml-3"
+                            (click)="$event.stopPropagation()"
+                            (change)="AllSelection($event)"
+                          ></mat-checkbox>
+                        </th>
+                        <td mat-cell *matCellDef="let row">
+                          <mat-checkbox
+                            class="ml-3"
+                            (click)="$event.stopPropagation()"
+                            (change)="toggleCheckboxSelection($event, row)"
+                            [checked]="AllChecked"
+                          ></mat-checkbox>
+                        </td>
+                      </ng-container>
+
+                      <!-- Colonna per azioni di modifica -->
+                      <ng-container matColumnDef="edit" sticky="true">
+                        <th
+                          (click)="$event.stopPropagation()"
+                          *matHeaderCellDef
+                          mat-header-cell
+                          mat-sort-header
+                          class="d-sm-table-cell cursor-pointer"
+
+                        >
+                          <add-button
+                            [tooltipPosition]="'below'"
+                            [params]="{}"
+                            [icon]=""
+                            (eventEmitter)="add('add')"
+                            paramClass="add-button"
+                            [hidden]="!config.haveEdit"
+                          ></add-button>
+                        </th>
+                        <td
+                          #menuTrigger="matMenuTrigger"
+                          *matCellDef="let element"
+                          mat-cell
+                          [matMenuTriggerFor]="menu"
+                          (click)="$event.stopPropagation()"
+                        >
+                          <button mat-icon-button>
+                            <mat-icon>more_vert</mat-icon>
+                          </button>
+                          <mat-menu #menu="matMenu" yPosition="above">
+                            <div>
+                              <button
+                                *ngFor="let item of config.listMenu"
+                                (click)="actionClickButtonItemMenuContestuale(item, element)"
+                                mat-menu-item
+                              >
+                                <mat-icon>{{ item.icon }}</mat-icon>
+                                <span>{{ item.label }}</span>
+                              </button>
+                            </div>
+                          </mat-menu>
+                        </td>
+                      </ng-container>
+
+                      <!-- Colonne dinamiche -->
+                      <ng-container
+                        [matColumnDef]="colum.value"
+                        *ngFor="let colum of displayedColumns"
+                      >
+                        <th
+                          (click)="orderByColumnName(colum.value)"
+                          mat-header-cell
+                          mat-sort-header
+                          *matHeaderCellDef
+                          [hidden]="hidden(colum.value)"
+                        >
+                          <span>{{ colum.label }}</span>
+                          <mat-table-header-arrow-custom
+                            [headerName]="colum.value"
+                            [campoOrdinamento]="allRequestObj['campoOrdinamento']"
+                            [ordinamento]="allRequestObj['ordinamento']"
+                          ></mat-table-header-arrow-custom>
+                        </th>
+                        <td
+                          mat-cell
+                          [hidden]="hidden(colum.value)"
+                          *matCellDef="let element"
+                          class="stato-cell"
+                        >
+                          <span [ngClass]="setColor(colum.label, element[colum.value])">
+                            {{ setValue(element[colum.value], colum.value) }}
+                          </span>
+                        </td>
+                      </ng-container>
+
+                      <!-- Colonna per gestione di accordion -->
+                      <ng-container *ngIf="config.accordion" matColumnDef="iconAccordion">
+                        <th *matHeaderCellDef mat-header-cell></th>
+                        <td *matCellDef="let element" mat-cell>
+                          <mat-icon>{{
+                            element == expandedElement ? "expand_less" : "expand_more"
+                            }}</mat-icon>
+                        </td>
+                      </ng-container>
+
+                      <!-- Dettaglio espanso con accordion -->
+                      <ng-container *ngIf="config.accordion" matColumnDef="expandedDetail">
+                        <td
+                          *matCellDef="let element"
+                          [attr.colspan]="allColumns.length"
+                          mat-cell
+                        >
+                          <div
+                            [@detailExpand]="
+                              element == expandedElement ? 'expanded' : 'collapsed'
+                            "
+                            class="account-accordion-row"
+                          >
+                            <div class="mt-1rem mb-1rem">
+                              <div class="bold mt-1rem mb-05rem">
+                                <div *ngIf="showTitleAccordion" class="inline-block bold">
+                                  {{ titleAccordion }}:
+                                </div>
+                              </div>
+                              <div
+                                class="info-separator col-12 col-sm-12 col-md-12 col-lg-12"
+                              ></div>
+                              <div class="row no-gutters mt-1">
+                                <div class="col-xs-12 col-sm-12 col-md-3 col-lg-12">
+                                  <div>
+
+                                    <sadi-classic-accordion
+                                      *ngIf="
+                                        config.typeAccordion == 'classic' &&
+                                        element.showAccordion
+                                      "
+                                      [data]="element.dataAccordion"
+
+                                    ></sadi-classic-accordion>
+
+                                    <sadi-tab-accordion
+                                      *ngIf="
+                                        config.typeAccordion == 'table' &&
+                                        element.showAccordion
+                                      "
+                                      [data]="element.dataAccordion"
+                                      (reload)="reload(element)"
+                                    ></sadi-tab-accordion>
+
+                                      <div *ngIf="showDynamicAccordion"><sadi-dynamic-page [config]="config.dynamicComponents"></sadi-dynamic-page></div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </ng-container>
+
+                      <!-- Riga intestazione -->
+                      <tr *matHeaderRowDef="allColumns; sticky: true" mat-header-row></tr>
+                      <!-- Riga dati -->
+                      <tr
+                        (click)="
+                          expandedElement = expandedElement === element ? null : element;
+                          getAccordionData(element)
+                        "
+                        *matRowDef="let element; columns: allColumns"
+                        [class.expanded-row]="expandedElement === element"
+                        class="account-row"
+                        mat-row
+                      ></tr>
+                      <!-- Riga per dettaglio espanso, se necessario -->
+                      <div *ngIf="config.accordion">
+                        <tr
+
+                          *matRowDef="let row; columns: ['expandedDetail']"
+                          class="account-row-detail"
+                          mat-row
+                        ></tr>
+                      </div>
+                    </table>
+                  </div>
+
+                  <!-- Paginatore -->
+                  <div
+                          *ngIf="dataSource && dataSource.data && dataSource.data.length"
+                          class="paginator-wrapper position-relative"
+                        >
+                        <div class='row' style="display: flex; justify-content: space-between">
+
+                          <div class="col-2 mt-15px">
+                          </div>
+                          <mat-paginator class="col-8"
+                                         (page)="applyFilter($event, true, null, null, null)"
+                                         [length]="model.pagination.totalResult"
+                                         [pageIndex]="model.pagination.indexPagination"
+                                         [pageSizeOptions]="[20, 50, 100]"
+                                         showFirstLastButtons
+                          >
+                          </mat-paginator>
+                        </div>
+                  </div>
+
+                  <!-- Nessun risultato trovato -->
+                  <div
+                    *ngIf="!dataSource || !dataSource.data || !dataSource.data.length"
+                    class="no-result"
+                  >
+                    <span class="text-center">Nessun risultato trovato</span>
+                  </div>
+                </div>
+              </div>
+            </div>

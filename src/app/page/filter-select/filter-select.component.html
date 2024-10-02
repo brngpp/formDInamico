@@ -1,0 +1,62 @@
+<div class="container progetto-page mt-10px" >
+  <mat-accordion>
+    <mat-expansion-panel #matExpansionPanelElement [expanded]="false">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <h4 class="m-0 filtri-title white-space-nowrap">
+                    Filtri :
+                </h4>
+                <mat-chip-list #chipList aria-label="Filtri Selezionati"
+                               class="ml-15px">
+                    <mat-chip
+                            (removed)="deleteSingleFilter(item)"
+                            *ngFor="let item of listSelectedFilters; let i = index">
+                        {{item.filtroLabel + '=' + item.valore}}
+
+                        <mat-icon matChipRemove *ngIf="!item.fixed">cancel</mat-icon>
+                    </mat-chip>
+                </mat-chip-list>
+                <div class="save-container">
+                    <div (click)="deleteAllFilters(); $event.stopPropagation()"
+                         class="delete-all-filters header-item-container">
+                        <mat-icon>delete</mat-icon>
+
+                    </div>
+                </div>
+            </mat-panel-title>
+
+
+        </mat-expansion-panel-header>
+        <form [formGroup]="formGroup">
+            <div class="row">
+                <div class="col-12 col-sm-12 col-md-4 col-lg-4">
+                    <sadi-health-select
+                            [data]="listFiltri"
+                            [multi]="false"
+                            icon="filter_alt"
+                            disableClearBtn="true"
+                            labelKey="label"
+                            valueKey="filter"
+                            formControlName="filter"
+                            placeholder="Filtro">
+                    </sadi-health-select>
+                </div>
+                <mat-form-field appearance="outline" class="col-4"
+                                [disabled]="!formGroup.get('filter').value">
+
+                    <mat-label>Valore</mat-label>
+                    <input matInput formControlName="valore" [placeholder]="'Valore'" autocomplete="off">
+                    <mat-icon matPrefix>description</mat-icon>
+                </mat-form-field>
+                <div class="save-container">
+                    <div (click)="saveFiltro()"
+                         [ngClass]="{'disabled': !formGroup.get('filter').value || !formGroup.get('valore').value}"
+                         class="header-item-container">
+                        <mat-icon class="color-white">search</mat-icon>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </mat-expansion-panel>
+  </mat-accordion>
+  </div>

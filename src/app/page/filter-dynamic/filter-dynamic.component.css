@@ -1,0 +1,49 @@
+.progetto-page {
+  height: 85vh;
+}
+
+.filtri-title {
+  font-size: 1.25rem;
+
+  color: #333;
+}
+
+.fontsizeformfield {
+  font-size: 0.875rem;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.color-white {
+  color: #fff;
+}
+
+.bg-blue {
+  background-color: #0760a8;
+}
+
+.mr-5px {
+  margin-right: 5px;
+}
+
+.mr-10px {
+  margin-right: 10px;
+}
+
+.mt-4 {
+  margin-top: 1.5rem;
+}
+
+.display-inline {
+  display: inline-block;
+}
+
+.vertical-align-sub {
+  vertical-align: sub;
+}
+
+.vertical-align-text-bottom {
+  vertical-align: text-bottom;
+}

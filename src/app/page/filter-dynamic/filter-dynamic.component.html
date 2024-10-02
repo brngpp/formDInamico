@@ -1,0 +1,240 @@
+<mat-accordion>
+  <mat-expansion-panel
+    class="full-width"
+    #matExpansionPanelElement
+    [expanded]="false"
+  >
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <h3 class="m-0 filtri-title white-space-nowrap">
+          {{ form ? "Filtri" : "Caricamento in corso.." }}
+        </h3>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="full-width mt-4" *ngIf="form">
+      <form [formGroup]="form">
+        <div class="row">
+          <div
+            *ngFor="let controlName of listControl"
+            class="col-12 col-sm-6 col-md-4"
+          >
+            <div class="form-group">
+              <ng-container [ngSwitch]="getControlType(controlName.value)">
+                <!-- Campo di testo -->
+                <div *ngSwitchCase="'text'">
+                  <mat-form-field
+                    appearance="outline"
+                    class="full-width fontsizeformfield"
+                  >
+                    <mat-label>{{ controlName.label }}</mat-label>
+                    <input
+                      matInput
+                      [formControlName]="controlName.value"
+                      [placeholder]="controlName.label"
+                    />
+                    <button
+                      mat-icon-button
+                      (click)="clearField(controlName.value)"
+                      matSuffix
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </mat-form-field>
+                </div>
+
+                <!-- Campo numero -->
+                <div *ngSwitchCase="'number'">
+                  <mat-form-field
+                    appearance="outline"
+                    class="full-width fontsizeformfield"
+                  >
+                    <mat-label>{{ controlName.label }}</mat-label>
+                    <input
+                      type="number"
+                      matInput
+                      [formControlName]="controlName.value"
+                      [placeholder]="controlName.label"
+                    />
+                    <button
+                      mat-icon-button
+                      (click)="clearField(controlName.value)"
+                      matSuffix
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </mat-form-field>
+                </div>
+
+                <!-- Select -->
+                <div *ngSwitchCase="'select'">
+                  <mat-form-field
+                    appearance="outline"
+                    class="full-width fontsizeformfield"
+                  >
+                    <mat-label>{{ controlName.label }}</mat-label>
+                    <mat-select
+                      [formControlName]="controlName.value"
+                      [placeholder]="controlName.label"
+                    >
+                      <mat-option
+                        *ngFor="let option of getList(controlName)"
+                        [value]="option.id ? option.id : option"
+                        >{{ option.label ? option.label : option }}</mat-option
+                      >
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <!-- Data -->
+                <div *ngSwitchCase="'date'">
+                  <mat-form-field
+                    appearance="outline"
+                    class="full-width fontsizeformfield"
+                  >
+                    <mat-label>{{ controlName.label }}</mat-label>
+                    <input
+                      matInput
+                      [matDatepicker]="picker"
+                      [placeholder]="controlName.label"
+                      [formControlName]="controlName.value"
+                      (click)="print(controlName.value)"
+                    />
+                    <mat-datepicker-toggle
+                      matSuffix
+                      [for]="picker"
+                    ></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <button
+                      mat-icon-button
+                      (click)="clearField(controlName.value)"
+                      matSuffix
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </mat-form-field>
+                </div>
+
+                <!-- Nazioni -->
+                <div *ngSwitchCase="'nazioni'">
+                  <mat-form-field
+                    appearance="outline"
+                    class="full-width fontsizeformfield"
+                  >
+                    <mat-label>{{ controlName.label }}</mat-label>
+                    <sadi-health-loader
+                      [show]="controlName.icon == 'loading'"
+                      typeMode="piker"
+                      diameter="20"
+                      class="loader-autocomplete"
+                    ></sadi-health-loader>
+                    <mat-icon
+                      matSuffix
+                      *ngIf="controlName.icon !== 'loading'"
+                      [matTooltip]="
+                        controlName.ToolTip
+                          ? controlName.ToolTip
+                          : 'Autocomplete dal terzo carattere'
+                      "
+                      >{{
+                        controlName.icon ? controlName.icon : "auto_fix_high"
+                      }}</mat-icon
+                    >
+                    <input
+                      type="text"
+                      matInput
+                      [formControlName]="controlName.value"
+                      [matAutocomplete]="auto"
+                      [placeholder]="controlName.label"
+                      matTooltip="Autocomplete dal terzo carattere"
+                      #input
+                    />
+                    <mat-autocomplete
+                      #auto="matAutocomplete"
+                      (optionSelected)="onOptionSelected($event)"
+                    >
+                      <mat-option
+                        *ngFor="
+                          let option of getListNazioni(controlName, input.value)
+                        "
+                        [value]="option.denominazione"
+                        >{{ option.denominazione }}</mat-option
+                      >
+                    </mat-autocomplete>
+                  </mat-form-field>
+                </div>
+
+                <!-- Autocomplete -->
+                <div *ngSwitchCase="'autocomplete'">
+                  <mat-form-field
+                    appearance="outline"
+                    class="full-width fontsizeformfield"
+                  >
+                    <mat-label>{{ controlName.label }}</mat-label>
+                    <sadi-health-loader
+                      [show]="controlName.icon == 'loading'"
+                      typeMode="piker"
+                      diameter="20"
+                      class="loader-autocomplete"
+                    ></sadi-health-loader>
+                    <mat-icon
+                      matSuffix
+                      *ngIf="controlName.icon !== 'loading'"
+                      [matTooltip]="
+                        controlName.ToolTip
+                          ? controlName.ToolTip
+                          : 'Autocomplete dal terzo carattere'
+                      "
+                      >{{
+                        controlName.icon ? controlName.icon : "auto_fix_high"
+                      }}</mat-icon
+                    >
+                    <input
+                      type="text"
+                      matInput
+                      [formControlName]="controlName.value"
+                      [matAutocomplete]="auto"
+                      [placeholder]="controlName.label"
+                      matTooltip="Autocomplete dal terzo carattere"
+                      #input
+                    />
+                    <mat-autocomplete #auto="matAutocomplete">
+                      <mat-option
+                        *ngFor="let option of getList(controlName, input.value)"
+                        [value]="option"
+                        >{{ option }}</mat-option
+                      >
+                    </mat-autocomplete>
+                  </mat-form-field>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <!-- Bottoni -->
+      <div class="action-wrapper d-none d-sm-block">
+        <button
+          mat-raised-button
+          type="submit"
+          class="color-white bg-blue mr-10px"
+          (click)="saveFiltro()"
+        >
+          <mat-icon matPrefix class="mr-5px vertical-align-text-bottom"
+            >search</mat-icon
+          >
+          Cerca
+        </button>
+        <button mat-raised-button type="reset" class="" (click)="annulla()">
+          <mat-icon matPrefix class="mr-5px vertical-align-text-bottom"
+            >delete</mat-icon
+          >
+          Annulla
+        </button>
+      </div>
+    </div>
+
+    <sadi-health-loader [show]="!form"></sadi-health-loader>
+  </mat-expansion-panel>
+</mat-accordion>

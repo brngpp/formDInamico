@@ -1,0 +1,206 @@
+@import "../../../scss/variables";
+
+h4 {
+  font-size: 1.2rem;
+  margin-bottom: 0;
+}
+
+.text-center {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.action-wrapper {
+  position: absolute;
+  top: 14px;
+  left: 20px;
+}
+
+.table-container {
+  max-height: 75vh;
+  overflow: auto;
+}
+
+.mat-column-edit {
+  min-width: 50px;
+}
+
+tr.table-row-detail {
+  height: 0;
+  background: rgba(222, 222, 222, 0.53);
+}
+
+.table-row td {
+  cursor: pointer;
+  border-bottom-width: 0;
+}
+
+
+// th.mat-header-cell, td.mat-cell {
+//     white-space: nowrap;
+//   }
+
+
+td.mat-cell {
+  padding-right: 10px;
+}
+
+.mat-column-header-row-2-group,
+.mat-column-header-row-3-group {
+  font-weight: bold;
+  text-align: center;
+  border: 1px solid #CCC;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+
+.button {
+  margin-top: 8px;
+}
+
+
+.accordion-tab {
+  max-width: 80vw;
+}
+
+tr.account-row-detail {
+  height: 0;
+  background: whitesmoke;
+}
+
+
+.account-row td {
+  cursor: pointer;
+}
+
+.account-accordion-row {
+  width: auto;
+  overflow-x: hidden; /* Impedisce lo scorrimento orizzontale */
+  box-sizing: border-box; /* Assicura che padding e bordi siano inclusi nella larghezza */
+}
+
+
+.mat-column-iconAccordion {
+  padding-right: 0 !important;
+  width: 40px;
+}
+
+
+.mat-column-edit {
+  padding: .5vw !important;
+  min-width: 2px !important;
+}
+
+
+th.mat-header-cell:last-of-type, td.mat-cell:last-of-type {
+  padding-right: 5px;
+}
+
+.mat-column-titolo {
+  padding-right: 10px;
+}
+
+.accordion-figli {
+  width: 80em;
+}
+
+table {
+  width: 100%;
+}
+
+td.mat-cell {
+  min-width: 100px;
+}
+
+.importButton {
+  color: white;
+  background-color: green;
+
+  border-radius: 10%;
+}
+
+
+// ////////////
+// ///
+
+.button-content {
+  display: flex;
+  align-items: center;
+}
+
+button:disabled {
+  background-color: gray; /* Cambia el color de fondo a gris */
+}
+
+.expanded-row {
+  background-color: rgba(7, 111, 67, 0.2509803922) !important; /* Cambia il colore di sfondo in viola */
+}
+
+
+.ATTIVO {
+  padding: 5px;
+  border-radius: 5px;
+
+  font-weight: 600;
+  background: $sadi-health-text-color-green;
+  color: white;
+  white-space: nowrap;
+}
+
+.DECEDUTO {
+  padding: 5px;
+  border-radius: 5px;
+
+  font-weight: 600;
+  background: black;
+  color: white;
+  white-space: nowrap;
+}
+
+.ASSUNTA {
+  padding: 5px;
+  border-radius: 5px;
+
+  font-weight: 600;
+  background: $sadi-health-text-color-green;
+  color: white;
+  white-space: nowrap;
+}
+
+.DA_ASSUMERE {
+  padding: 5px;
+  border-radius: 5px;
+
+  font-weight: 600;
+  background: rgb(192, 6, 6);
+  color: white;
+  white-space: nowrap;
+}
+
+.DA_ESEGUIRE {
+  padding: 5px;
+  border-radius: 5px;
+
+  font-weight: 600;
+  background: rgb(192, 6, 6);
+  color: white;
+  white-space: nowrap;
+}
+
+.ESEGUITA {
+  padding: 5px;
+  border-radius: 5px;
+
+  font-weight: 600;
+  background: $sadi-health-text-color-green;
+  color: white;
+  white-space: nowrap;
+}
+
+.NOCLASS {
+  white-space: nowrap;
+}
+
+.push {
+  white-space: null;
+}

@@ -9,10 +9,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { TabDinamicaComponent } from './page/tab-dinamica/tab-dinamica.component';
+import { FilterSelectComponent } from './page/filter-select/filter-select.component';
+import { FilterDynamicComponent } from './page/filter-dynamic/filter-dynamic.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    TabDinamicaComponent,
+    FilterSelectComponent,
+    FilterDynamicComponent
   ],
   imports: [
     BrowserModule,
